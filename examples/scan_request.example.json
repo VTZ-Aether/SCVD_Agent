@@ -1,0 +1,25 @@
+{
+  "target": "../tests/fixtures/vulnerable",
+  "out_dir": "../reports",
+  "report_prefix": "request_demo",
+  "documents": [],
+  "scope_files": [],
+  "audit_sources": ["code4rena", "sherlock"],
+  "attack_sources": ["defihack"],
+  "output_formats": ["markdown", "json"],
+  "options": {
+    "max_hotspots": 30,
+    "max_knowledge_records": 6,
+    "max_attack_poc_records": 4,
+    "include_source_context": true,
+    "llm": {
+      "enabled": false,
+      "provider": "openai_compatible",
+      "model": "gpt-4o-mini",
+      "api_key_env": "OPENAI_API_KEY",
+      "base_url": "https://api.openai.com/v1",
+      "temperature": 0.0,
+      "max_tokens": 1200
+    }
+  }
+}

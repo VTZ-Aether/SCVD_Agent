@@ -1,0 +1,20 @@
+[project]
+name = "scvd-agent"
+version = "0.1.0"
+description = "Agentic smart-contract vulnerability detector with RAG and business-flow reasoning"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "OpenAI Codex" }
+]
+dependencies = []
+
+[project.scripts]
+scvd-agent = "scvd_agent.cli:main"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["scvd_agent*"]

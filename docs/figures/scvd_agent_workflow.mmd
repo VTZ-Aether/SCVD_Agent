@@ -1,0 +1,40 @@
+flowchart LR
+  C4["Code4rena<br/>Sherlock"] --> ARAG["RAG<br/>audit-report vulnerability KB"]
+  DH["DeFiHack"] --> PRAG["RAG<br/>historical attack PoC KB"]
+
+  PROJ["Project"] --> BLUE
+  DOC["Documents"] --> BLUE
+
+  subgraph BLUE["Blue module: business understanding + vulnerability reasoning"]
+    STRUCT["function calls<br/>inheritance<br/>state variables"] --> BLOGIC["business logic 1..n"]
+    BLOGIC --> LLM1["LLM1<br/>business understanding"]
+    LLM1 <--> LLM2["LLM2<br/>knowledge-grounded analysis"]
+    LLM2 --> LLM3["LLM3<br/>root-cause reasoning"]
+  end
+
+  ARAG --> LLM2
+  PRAG --> LLM3
+
+  subgraph RED["Red module: PoC generation + Foundry sandbox"]
+    LLM3 --> ROOT["vulnerability root cause"]
+    ROOT --> LLM4["LLM4<br/>initial PoC"]
+    LLM4 --> FOUNDRY["Foundry sandbox<br/>fork height + compile feedback"]
+    FOUNDRY --> LLM5["LLM5<br/>feedback repair"]
+    LLM5 --> FULLPOC["complete PoC plan"]
+  end
+
+  subgraph GREEN["Green module: patch generation + dynamic validation"]
+    BLOGIC --> CONS["business-equivalence constraints<br/>security constraints"]
+    CONS --> LLM6["LLM6<br/>patch proposer"]
+    LLM6 <--> LLM7["LLM7<br/>patch reviewer"]
+    LLM7 --> DYN["dynamic validation checks"]
+    DYN --> PATCH["security patch plan"]
+    DYN -. feedback optimization .-> LLM6
+  end
+
+  FULLPOC --> REPORTS["reports"]
+  PATCH --> REPORTS
+
+  style BLUE fill:#dbe8fb,stroke:#4f7dbb,stroke-width:2px
+  style RED fill:#f8d1d1,stroke:#b94a48,stroke-width:2px
+  style GREEN fill:#dcefd8,stroke:#5f9b52,stroke-width:2px

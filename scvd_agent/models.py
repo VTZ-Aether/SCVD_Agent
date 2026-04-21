@@ -148,6 +148,33 @@ class WorkflowEdge:
 
 
 @dataclass(slots=True)
+class CallGraphEdge:
+    caller: str
+    callee: str
+    call_type: str
+    confidence: float
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "caller": self.caller,
+            "callee": self.callee,
+            "call_type": self.call_type,
+            "confidence": round(self.confidence, 3),
+        }
+
+
+@dataclass(slots=True)
+class InheritanceEdge:
+    child: str
+    parent: str
+    path: str
+    line_number: int
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(slots=True)
 class BusinessFlow:
     id: str
     name: str
@@ -157,6 +184,21 @@ class BusinessFlow:
     upstream: list[str] = field(default_factory=list)
     downstream: list[str] = field(default_factory=list)
     keywords: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(slots=True)
+class BusinessLogicUnit:
+    id: str
+    name: str
+    entry_points: list[str] = field(default_factory=list)
+    call_edges: list[str] = field(default_factory=list)
+    state_variables: list[str] = field(default_factory=list)
+    inherited_context: list[str] = field(default_factory=list)
+    summary: str = ""
+    risk_focus: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -209,6 +251,51 @@ class BusinessConstraint:
 
 
 @dataclass(slots=True)
+class AttackPocRecord:
+    id: str
+    title: str
+    source: str
+    category: str
+    tactic: str
+    preconditions: list[str] = field(default_factory=list)
+    steps: list[str] = field(default_factory=list)
+    indicators: list[str] = field(default_factory=list)
+    code_template: str = ""
+    default_fork_block: int | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(slots=True)
+class RetrievedAttackPoc:
+    poc_id: str
+    score: float
+    rationale: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "poc_id": self.poc_id,
+            "score": round(self.score, 3),
+            "rationale": self.rationale,
+        }
+
+
+@dataclass(slots=True)
+class RootCauseAnalysis:
+    id: str
+    finding_id: str
+    category: str
+    root_cause: str
+    evidence: list[str] = field(default_factory=list)
+    audit_knowledge_ids: list[str] = field(default_factory=list)
+    attack_poc_ids: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(slots=True)
 class ValidationResult:
     finding_id: str
     status: str
@@ -234,6 +321,77 @@ class ValidationResult:
             "next_steps": self.next_steps,
             "evidence": self.evidence,
         }
+
+
+@dataclass(slots=True)
+class PocDraft:
+    id: str
+    finding_id: str
+    root_cause_id: str
+    title: str
+    target_functions: list[str] = field(default_factory=list)
+    fork_block: int | None = None
+    code: str = ""
+    status: str = "drafted"
+    feedback: list[str] = field(default_factory=list)
+    next_steps: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(slots=True)
+class FoundryRunResult:
+    draft_id: str
+    status: str
+    command: str
+    fork_block: int | None = None
+    compiled: bool = False
+    tests_passed: bool = False
+    feedback: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(slots=True)
+class PatchCandidate:
+    id: str
+    finding_id: str
+    strategy: str
+    business_constraints: list[str] = field(default_factory=list)
+    security_constraints: list[str] = field(default_factory=list)
+    diff: str = ""
+    rationale: str = ""
+    status: str = "candidate"
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(slots=True)
+class DynamicValidationResult:
+    patch_id: str
+    status: str
+    checks: list[str] = field(default_factory=list)
+    feedback: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(slots=True)
+class SecurityPatch:
+    id: str
+    finding_id: str
+    patch_candidate_id: str
+    summary: str
+    diff: str
+    validation_status: str
+    residual_risk: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
 
 
 @dataclass(slots=True)
@@ -293,13 +451,24 @@ class WorkingMemory:
     retrieved_knowledge: list[RetrievedKnowledge] = field(default_factory=list)
     state_vars_by_file: dict[str, set[str]] = field(default_factory=dict)
     functions: list[FunctionFact] = field(default_factory=list)
+    call_edges: list[CallGraphEdge] = field(default_factory=list)
+    inheritance_edges: list[InheritanceEdge] = field(default_factory=list)
     business_flows: list[BusinessFlow] = field(default_factory=list)
+    business_logic_units: list[BusinessLogicUnit] = field(default_factory=list)
     audit_tasks: list[AuditTask] = field(default_factory=list)
     business_constraints: list[BusinessConstraint] = field(default_factory=list)
+    attack_poc_knowledge_base: list[AttackPocRecord] = field(default_factory=list)
+    retrieved_attack_pocs: list[RetrievedAttackPoc] = field(default_factory=list)
+    root_causes: list[RootCauseAnalysis] = field(default_factory=list)
     hotspots: list[FunctionFact] = field(default_factory=list)
     workflow_edges: list[WorkflowEdge] = field(default_factory=list)
     findings: list[Finding] = field(default_factory=list)
     validation_results: list[ValidationResult] = field(default_factory=list)
+    poc_drafts: list[PocDraft] = field(default_factory=list)
+    foundry_results: list[FoundryRunResult] = field(default_factory=list)
+    patch_candidates: list[PatchCandidate] = field(default_factory=list)
+    dynamic_validation_results: list[DynamicValidationResult] = field(default_factory=list)
+    security_patches: list[SecurityPatch] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
@@ -313,12 +482,23 @@ class WorkingMemory:
                 path: sorted(vars_) for path, vars_ in self.state_vars_by_file.items()
             },
             "functions": [function.to_dict() for function in self.functions],
+            "call_edges": [edge.to_dict() for edge in self.call_edges],
+            "inheritance_edges": [edge.to_dict() for edge in self.inheritance_edges],
             "business_flows": [flow.to_dict() for flow in self.business_flows],
+            "business_logic_units": [unit.to_dict() for unit in self.business_logic_units],
             "audit_tasks": [task.to_dict() for task in self.audit_tasks],
             "business_constraints": [constraint.to_dict() for constraint in self.business_constraints],
+            "attack_poc_knowledge_base": [record.to_dict() for record in self.attack_poc_knowledge_base],
+            "retrieved_attack_pocs": [item.to_dict() for item in self.retrieved_attack_pocs],
+            "root_causes": [root_cause.to_dict() for root_cause in self.root_causes],
             "hotspots": [hotspot.to_dict() for hotspot in self.hotspots],
             "workflow_edges": [edge.to_dict() for edge in self.workflow_edges],
             "findings": [finding.to_dict() for finding in self.findings],
             "validation_results": [result.to_dict() for result in self.validation_results],
+            "poc_drafts": [draft.to_dict() for draft in self.poc_drafts],
+            "foundry_results": [result.to_dict() for result in self.foundry_results],
+            "patch_candidates": [candidate.to_dict() for candidate in self.patch_candidates],
+            "dynamic_validation_results": [result.to_dict() for result in self.dynamic_validation_results],
+            "security_patches": [patch.to_dict() for patch in self.security_patches],
             "notes": self.notes,
         }

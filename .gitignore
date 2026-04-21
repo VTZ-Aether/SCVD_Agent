@@ -1,0 +1,11 @@
+.idea/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+reports/
+.tmp_remote_repo/
+remote_repo_sync/
+
+*.pdf
