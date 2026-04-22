@@ -1,24 +1,6 @@
 # SCVD Agent
 
-`SCVD Agent` is a lightweight Python prototype for agentic smart-contract vulnerability detection. It combines dual RAG knowledge bases, project/document parsing, business-flow construction, vulnerability reasoning, PoC planning, Foundry sandbox feedback, patch generation, validation planning, and report generation. The workflow is inspired by:
-
-- `Knowdit: Agentic Smart Contract Vulnerability Detection with Auditing Knowledge Summarization`
-- `Thought is All You Need: Smart Contract Vulnerability Detection with Thought-Augmented Large Language Model`
-
-This version focuses on the pre-fuzzing stages:
-
-1. project profiling
-2. audit knowledge retrieval from a curated Code4rena/Sherlock-style RAG base
-3. historical DeFiHack-style attack PoC retrieval
-4. business flow graph construction from function calls, inheritance, entry points, and shared state
-5. business composition and semantic constraint validation
-6. vulnerability reasoning and root-cause extraction
-7. PoC planning with Foundry sandbox feedback
-8. detailed vulnerability validation with preconditions, false-positive checks, attack paths, and next-step test plans
-9. multi-agent security patch planning and dynamic validation checks
-10. reflection and report consolidation
-
-The dynamic execution backend for fuzzing and fork replay is intentionally left as a follow-up extension point.
+`SCVD Agent` is a lightweight Python prototype for agentic smart-contract vulnerability detection. It combines dual RAG knowledge bases, project/document parsing, business-flow construction, vulnerability reasoning, PoC planning, Foundry sandbox feedback, patch generation, validation planning, and report generation. 
 
 ## What it detects
 
