@@ -72,7 +72,7 @@ py -3 -m unittest discover -s tests -v
 
 ## Architecture
 
-![SCVD Agent workflow](docs/figures/scvd_agent_workflow.svg)
+![SCVD Agent workflow](docs/figures/workflow.png)
 
 - `ProjectProfilerAgent`: indexes files, languages, state variables, functions
 - `CodeStructureAgent`: extracts function-call edges, inheritance edges, and the state surface
